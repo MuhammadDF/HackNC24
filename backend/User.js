@@ -3,9 +3,9 @@ const {Schema} = mongoose;
 const courseSchema = require("./Course");
 
 const userSchema = new Schema({
-    fName: String,
-    lName: String,
+    name: String,
     email: String,
+    password: String,
     phoneNumber: String,
     courses: [courseSchema],
 });

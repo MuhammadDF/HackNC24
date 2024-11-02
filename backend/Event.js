@@ -5,14 +5,13 @@ const userSchema = require("./User");
 
 
 const eventSchema = new Schema({
-    fName: String,
-    lName: String,
+    name: String,
     description: String,
     duration: Number,
     location: String,
     cap: Number,
     course: courseSchema,
-    attendees: [userSchema]
+    attendees: [String]
 });
 
 module.exports = mongoose.model("Event", eventSchema);

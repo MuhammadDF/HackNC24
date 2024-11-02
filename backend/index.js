@@ -4,6 +4,7 @@ let cors = require('cors');
 let bodyParser = require('body-parser');
 let dotenv = require('dotenv').config()
 const app = express();
+const Event = require('./Event');
 
 app.use(cors({allowedHeaders: '*'}));
 
@@ -22,17 +23,38 @@ mongoose
     console.error('Error connecting to mongo', err)
   })
 
+  app.get("/api/events", async(req, res) => {
+    try{
+      const events = await Event.find();
+      req.send(events);
+    } catch(err){
+      res.status(500).json({message: "Get users failed!"});
+    }
+  })
 
-/*
-app.route('/').get((req, res, next) => {
-  res.json('hello')
-})
+  app.post("/api/events", async(req, res) => {
+    try{
+      const name = req.body.name;
+      const description = req.body.description;
+      const duration = req.body.duration;
+      const location = req.body.location;
+      const cap = req.body.cap;
+      const course = req.body.course;
+      const attendees = req.body.attendees;
+      const event = new Event({
+        name: name,
+        description: description,
+        duration: duration,
+        location: location,
+        cap: cap,
+        course: course,
+        attendees: attendees
+    });
+    const result = await event.save();
+    console.log(result);
+    } catch(err){
+      res.status(500).json({message: "Post users failed!"});
+    }
+  })
 
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({
-  extended: true
-}));
 
-
-//app.use(userRoute);
-*/
