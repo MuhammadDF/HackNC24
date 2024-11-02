@@ -9,7 +9,7 @@ app.use(cors({allowedHeaders: '*'}));
 
 // Connecting mongoDB Database
 
-const db = process.env.MONGODB_URI.toString()
+const db = process.env.MONGODB_URI
 
 mongoose
   .connect(db)
