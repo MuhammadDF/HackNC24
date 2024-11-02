@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import LoginScreen from './Pages/LoginScreen';
 import RegisterScreen from './Pages/RegisterScreen';
+import EventsScreen from './Pages/EventsScreen';
 
 const theme = createTheme();
 
@@ -13,6 +14,7 @@ const App = () => {
         <Routes>
           <Route path="/" element={<LoginScreen />} />
           <Route path="/register" element={<RegisterScreen />} />
+          <Route path="/events" element={<EventsScreen />} />
         </Routes>
       </Router>
     </ThemeProvider>

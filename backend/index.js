@@ -26,7 +26,7 @@ mongoose
   app.get("/api/events", async(req, res) => {
     try{
       const events = await Event.find();
-      req.send(events);
+      res.send(events);
     } catch(err){
       res.status(500).json({message: "Get users failed!"});
     }
