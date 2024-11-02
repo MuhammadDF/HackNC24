@@ -45,13 +45,22 @@ const LoginScreen = () => {
           Login
         </Button>
         <Button
-          variant="text"
+          variant="contained"
           color="primary"
           onClick={() => navigate('/register')}
           fullWidth
           sx={{ mt: 1 }}
         >
           Register
+        </Button>
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={() => navigate('/events')}
+          fullWidth
+          sx={{ mt: 1 }}
+        >
+          Test
         </Button>
       </Box>
     </Container>
