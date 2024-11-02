@@ -2,6 +2,7 @@ let express = require('express');
 let mongoose = require('mongoose');
 let cors = require('cors');
 let bodyParser = require('body-parser');
+const dotenv = require('dotenv').config()
 const app = express();
 app.use(cors({allowedHeaders: '*'}));
 
@@ -9,7 +10,7 @@ app.use(cors({allowedHeaders: '*'}));
 
 // Connecting mongoDB Database
 
-const db = process.env.MONGODB_URI
+const db = process.env.MONGODB_URI.toString()
 
 mongoose
   .connect(db)
