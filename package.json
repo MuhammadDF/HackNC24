@@ -34,5 +34,9 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
-  }
+  },
+  "description": "Hosting our group project for the UNC HackNC Hackathon 2024.",
+  "main": "index.js",
+  "author": "",
+  "license": "ISC"
 }
