@@ -1,98 +1,84 @@
-let express = require('express');
-let mongoose = require('mongoose');
-let cors = require('cors');
-let bodyParser = require('body-parser');
-let dotenv = require('dotenv').config()
-const app = express();
-const Event = require('./Event');
+// Imports
+const express = require("express");
+const mongoose = require("mongoose");
+const dotenv = require("dotenv");
+const cors = require("cors");
 const User = require("./User");
+const Event = require("./Event");
 
-app.use(cors());
-app.use(bodyParser.json()); // Parse JSON bodies
+dotenv.config();
 
-// Express Route
+const app = express();
+const PORT = 5000;
 
-// Connecting mongoDB Database
+// Middleware to parse JSON data
+app.use(cors());  // Add this line to enable CORS
+app.use(express.json());
 
-const db = process.env.MONGODB_URI.toString()
+// Connecting to MongoDB
+mongoose.connect(process.env.MONGODB_URI)
+.then(() => console.log("Connected to MongoDB"))
+.catch((error) => console.error("MongoDB connection error:", error));
 
-// Connects to MongoDB
-mongoose
-  .connect(db, { useNewUrlParser: true, useUnifiedTopology: true })
-  .then((x) => {
-    console.log(`Connected to Mongo! Database name: "${x.connections[0].name}"`)
-  })
-  .catch((err) => {
-    console.error('Error connecting to mongo', err)
-  })
-
-// Get User Route
-app.get("/api/user", async(req, res) => {
-  const email = req.query.email;
-  const password = req.query.password;
+// Getting Users
+app.get("/users", async (req, res) => {
   try {
-    const user = await User.findOne({ email, password });
-    if (!user) {
-      res.status(404).send("Failed to find user!");
-    } else {
-      res.json(user);
-    }
-  } catch(err) {
-    res.status(500).send("Error fetching user.");
+      const users = await User.find();
+      res.json(users);
+  } catch (error) {
+      res.status(500).json({ message: error.message });
   }
 });
 
-// Register User Route
-app.post("http://localhost:5000/api/usera", async(req, res) => {
+// Create User
+app.post("/users", async (req, res) => {
+  const { name, email, password, phoneNumber, courses, attendingEvents } = req.body;
+  const newUser = new User({
+      name: name,
+      email: email,
+      password: password,
+      phoneNumber: phoneNumber,
+      courses: courses,
+      attendingEvents: attendingEvents,
+  });
   try {
-    const { name, email, password, phoneNumber, courses, attendingEvents } = req.body;
-    const user = new User({
-      name,
-      email,
-      password,
-      phoneNumber,
-      courses,
-      attendingEvents: attendingEvents || [],
-    });
-    const result = await user.save();
-    res.json(result); // Return saved user
-  } catch (err) {
-    console.log(err);
-    res.status(500).send("Failed to add user!");
+      const savedUser = await newUser.save();
+      res.json(savedUser);
+  } catch (error) {
+      res.status(400).json({ message: error.message });
   }
 });
 
-// Get Events Route
-app.get("/api/events", async(req, res) => {
+// Geting Events
+app.get("/events", async (req, res) => {
   try {
-    const events = await Event.find();
-    res.json(events);
-  } catch (err) {
-    res.status(500).send("Get events failed!");
+      const events = await Event.find();
+      res.json(events);
+  } catch (error) {
+      res.status(500).json({ message: error.message });
   }
 });
 
-// Post Event Route
-app.post("/api/events", async(req, res) => {
+// Create Event
+app.post("/events", async (req, res) => {
+  const { name, description, duration, location, cap, course, attendees } = req.body;
+  const newEvent = new Event({
+      name: name,
+      description: description,
+      duration: duration,
+      location: location,
+      cap: cap,
+      course: course,
+      attendees: attendees,
+  });
   try {
-    const { name, description, duration, location, cap, course, attendees } = req.body;
-    const event = new Event({
-      name,
-      description,
-      duration,
-      location,
-      cap,
-      course,
-      attendees,
-    });
-    const result = await event.save();
-    res.json(result);
-  } catch (err) {
-    res.status(500).send("Post event failed!");
+      const savedEvent = await newEvent.save();
+      res.json(savedEvent);
+  } catch (error) {
+      res.status(400).json({ message: error.message });
   }
 });
 
-// Start Server
-app.listen(5000, () => {
-  console.log("Backend is up on port 5000!");
+app.listen(PORT, () => {
+  console.log(`Server is running on http://localhost:${PORT}`);
 });

@@ -5,6 +5,7 @@ import LoginScreen from './Pages/LoginScreen';
 import RegisterScreen from './Pages/RegisterScreen';
 import EventsScreen from './Pages/EventsScreen';
 import UserContext from './Contexts/UserContext'
+import DummyUser from './Pages/DummyUser';
 
 const theme = createTheme();
 
@@ -16,7 +17,7 @@ const App = () => {
       <UserContext.Provider value={{user, setUser}}>
         <Router>
           <Routes>
-            <Route path="/" element={<LoginScreen />} />
+            <Route path="/" element={<DummyUser />} />
             <Route path="/register" element={<RegisterScreen />} />
             <Route path="/events" element={<EventsScreen />} />
           </Routes>

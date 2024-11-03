@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Container, TextField, Typography, Button, LinearProgress, List, ListItem, IconButton } from '@mui/material';import { useNavigate } from 'react-router-dom';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { useContext } from 'react';
@@ -66,20 +66,23 @@ const RegisterScreen = () => {
     setSection(0);
   };
 
+  useEffect(() => {
+    console.log(courses);
+  }, [courses])
+
   const handleRemoveCourse = (index) => {
     setCourses(courses.filter((_, i) => i !== index));
   };
 
   const handleRegister = () => {
-    const registerData = {
+    axios.post("http://localhost:5000/users", {
       name: firstName + " " + lastName,
       email: email,
       password: password,
       phoneNumber: phoneNumber,
       courses: courses,
       attendingEvents: []
-    };
-    axios.post("http://localhost:5000/api/usera", registerData)
+    })
       .then((response) => {
         setUser(response.data);
         navigate('/events');
