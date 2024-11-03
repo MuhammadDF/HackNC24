@@ -8,7 +8,7 @@ const userSchema = new Schema({
     password: String,
     phoneNumber: String,
     courses: [courseSchema],
+    attendingEvents: [String]
 });
 
-const User = mongoose.model("User", userSchema);
-module.exports = { User, userSchema };
+module.exports = mongoose.model("User", userSchema);

@@ -5,10 +5,16 @@ import SettingsIcon from '@mui/icons-material/Settings';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import mockEvents from '../mockEvents'; 
+import axios from "axios";
 
 const EventsScreen = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [filteredEvents, setFilteredEvents] = useState(mockEvents); 
+  const [events, setEvents] = useState([]);
+
+  useEffect(() => {
+    axios.get("")
+  }, []);
 
   const handleSearch = (event) => {
     const query = event.target.value.toLowerCase();
