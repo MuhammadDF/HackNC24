@@ -1,75 +1,76 @@
-import React, { useState, useEffect } from 'react';
-import { AppBar, Toolbar, IconButton, Typography, Container, TextField, Grid, Card, CardContent, Button, Modal, Box } from '@mui/material';
-import SearchIcon from '@mui/icons-material/Search';
-import SettingsIcon from '@mui/icons-material/Settings';
-import AddCircleIcon from '@mui/icons-material/AddCircle';
-import NotificationsIcon from '@mui/icons-material/Notifications';
-import mockEvents from '../mockEvents'; 
-import axios from 'axios';
+import React, { useState, useEffect, useContext } from 'react';
+import {
+  AppBar, Toolbar, Typography, Container, Grid, Card, CardContent, Button, Modal, Box, TextField, IconButton,
+} from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
+import axios from 'axios';
+import UserContext from '../Contexts/UserContext';
 
 const EventsScreen = () => {
-  const [searchQuery, setSearchQuery] = useState('');
-  const [filteredEvents, setFilteredEvents] = useState(mockEvents); 
   const [events, setEvents] = useState([]);
   const [open, setOpen] = useState(false);
+  const [selectedEvent, setSelectedEvent] = useState(null);
+  const { user } = useContext(UserContext);
 
-  const handleOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
+  const handleOpen = (event) => {
+    setSelectedEvent(event);
+    setOpen(true);
+  };
+  
+  const handleClose = () => {
+    setOpen(false);
+    setSelectedEvent(null);
+  };
+
+  const handleRegister = () => {
+    if (user && selectedEvent) {
+      axios.post(`http://localhost:5000/events/${selectedEvent._id}/register`, { userId: user._id })
+        .then((response) => {
+          console.log(response.data.message);
+          handleClose();
+          // Refresh events data to show updated attendees count
+          fetchEvents();
+        })
+        .catch((error) => console.error("Error registering for event:", error));
+    }
+  };
+
+  const fetchEvents = () => {
+    axios.get("http://localhost:5000/events")
+      .then(response => setEvents(response.data))
+      .catch(error => console.error("Error fetching events:", error));
+  };
 
   useEffect(() => {
-    axios.get("http://localhost:5000/events")
-      .then(response => {
-        console.log(response.data);
-        setEvents(response.data);
-      })
-      .catch(err => console.log(err));
+    fetchEvents();
   }, []);
-
-  /*
-  const handleSearch = (event) => {
-    const query = event.target.value.toLowerCase();
-    setSearchQuery(query);
-
-    const filtered = mockEvents.filter(
-      (event) =>
-        event.course.courseName.toLowerCase().includes(query) ||
-        event.fName.toLowerCase().includes(query) ||
-        event.lName.toLowerCase().includes(query) ||
-        event.description.toLowerCase().includes(query)
-    );
-
-    setFilteredEvents(filtered);
-  };
-  */
 
   return (
     <Container maxWidth="lg" sx={{ mt: 4 }}>
       <Grid container spacing={3}>
-        {events.map((event, index) => (
-          <Grid item xs={12} sm={6} md={4} key={index}>
+        {events.map((event) => (
+          <Grid item xs={12} sm={6} md={4} key={event._id}>
             <Card variant="outlined">
               <CardContent>
                 <Typography variant="h6">
                   {event.course.courseName} - {event.course.professor} - {event.course.section}
                 </Typography>
-                <Typography variant="subtitle1">
-                  Hosted by {event.name}
-                </Typography>
-                <Typography variant="body2" color="textSecondary">
-                  {event.description}
-                </Typography>
-                <Typography variant="body2" sx={{ mt: 1 }}>
-                  Location: {event.location}
-                </Typography>
+                <Typography variant="subtitle1">Hosted by {event.name}</Typography>
+                <Typography variant="body2">{event.description}</Typography>
+                <Typography variant="body2" sx={{ mt: 1 }}>Location: {event.location}</Typography>
                 <Typography variant="body2">Duration: {event.duration} hours</Typography>
                 <Typography variant="body2">
                   Attendees: {event.attendees.length}/{event.cap}
                 </Typography>
-                <Button variant="contained" color="primary" fullWidth sx={{ mt: 2 }}>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  fullWidth
+                  sx={{ mt: 2 }}
+                  onClick={() => handleOpen(event)}
+                >
                   Join Event
                 </Button>
-                
               </CardContent>
             </Card>
           </Grid>
@@ -98,20 +99,10 @@ const EventsScreen = () => {
             <CloseIcon />
           </IconButton>
           <Typography variant="h6" component="h2">
-            Register for Event
+            Register for {selectedEvent?.name}
           </Typography>
-          <TextField
-            fullWidth
-            label="Your Name"
-            margin="normal"
-          />
-          <TextField
-            fullWidth
-            label="Your Email"
-            margin="normal"
-          />
-          <Button variant="contained" color="primary" fullWidth sx={{ mt: 2 }} onClick={handleClose}>
-            Submit
+          <Button variant="contained" color="primary" fullWidth sx={{ mt: 2 }} onClick={handleRegister}>
+            Confirm Registration
           </Button>
         </Box>
       </Modal>

@@ -58,6 +58,26 @@ app.post("/users",  (req, res) => {
   }
 });
 
+// Create User
+app.update("/users",  (req, res) => {
+  console.log(req.body)
+  const { name, email, password, phoneNumber, courses, attendingEvents } = req.body;
+  const newUser = new User({
+      name: name,
+      email: email,
+      password: password,
+      phoneNumber: phoneNumber,
+      courses: courses,
+      attendingEvents: attendingEvents,
+  });
+  try {
+      const savedUser = newUser.save();
+      res.json(savedUser);
+  } catch (error) {
+      res.status(400).json({ message: error.message });
+  }
+});
+
 // Geting Events
 app.get("/events", async (req, res) => {
   try {
@@ -85,6 +105,38 @@ app.post("/events", async (req, res) => {
       res.json(savedEvent);
   } catch (error) {
       res.status(400).json({ message: error.message });
+  }
+});
+
+app.post("/events/:eventId/register", async (req, res) => {
+  const { eventId } = req.params;
+  const { userId } = req.body;
+
+  try {
+    // Find the event by ID
+    const event = await Event.findById(eventId);
+    if (!event) return res.status(404).json({ message: "Event not found" });
+
+    // Check if user is already registered
+    if (event.attendees.includes(userId)) {
+      return res.status(400).json({ message: "User already registered for this event" });
+    }
+
+    // Check if event capacity is full
+    if (event.attendees.length >= event.cap) {
+      return res.status(400).json({ message: "Event is at full capacity" });
+    }
+
+    // Add user to event's attendee list
+    event.attendees.push(userId);
+    await event.save();
+
+    // Update user's attendingEvents
+    await User.findByIdAndUpdate(userId, { $push: { attendingEvents: eventId } });
+
+    res.json({ message: "User registered for event successfully" });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
   }
 });
 

@@ -1,12 +1,13 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { Container, TextField, Typography, Button, Box } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
+import UserContext from '../Contexts/UserContext';
 
 const LoginScreen = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [emailError, setEmailError] = useState('');
-  const [user, setUser] = useState('');
+  const [user, setUser] = useContext(UserContext);
   const navigate = useNavigate();
 
   const validateEmail = (email) => {
