@@ -88,6 +88,38 @@ app.post("/events",  (req, res) => {
   }
 });
 
+app.post("/events/:eventId/register", async (req, res) => {
+  const { eventId } = req.params;
+  const { userId } = req.body;
+
+  try {
+    // Find the event by ID
+    const event = await Event.findById(eventId);
+    if (!event) return res.status(404).json({ message: "Event not found" });
+
+    // Check if user is already registered
+    if (event.attendees.includes(userId)) {
+      return res.status(400).json({ message: "User already registered for this event" });
+    }
+
+    // Check if event capacity is full
+    if (event.attendees.length >= event.cap) {
+      return res.status(400).json({ message: "Event is at full capacity" });
+    }
+
+    // Add user to event's attendee list
+    event.attendees.push(userId);
+    await event.save();
+
+    // Update user's attendingEvents
+    await User.findByIdAndUpdate(userId, { $push: { attendingEvents: eventId } });
+
+    res.json({ message: "User registered for event successfully" });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
 app.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);
 });
