@@ -1,32 +1,33 @@
 import React, { useState, useEffect } from 'react';
-import { AppBar, Toolbar, IconButton, Typography, Container, TextField, Grid, Card, CardContent, Button, Modal, Box } from '@mui/material';
+import { AppBar, Toolbar, IconButton, Typography, Container, TextField, Grid, Card, CardContent, Button } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import SettingsIcon from '@mui/icons-material/Settings';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import mockEvents from '../mockEvents'; 
-import axios from 'axios';
-import CloseIcon from '@mui/icons-material/Close';
+import EventPopup from './EventPopup'; // Import the EventPopup component
+import axios from "axios";
+import UserContext from '../Contexts/UserContext';
+import { useContext } from 'react';
 
 const EventsScreen = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [filteredEvents, setFilteredEvents] = useState(mockEvents); 
   const [events, setEvents] = useState([]);
-  const [open, setOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
+  const {user, setUser} = useContext(UserContext);
 
-  const handleOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
+
 
   useEffect(() => {
-    axios.get("http://localhost:5000/events")
-      .then(response => {
-        console.log(response.data);
-        setEvents(response.data);
-      })
-      .catch(err => console.log(err));
+    // Fetch events if needed
+    // axios.get('/api/events').then(response => setEvents(response.data));
   }, []);
 
-  /*
+  const toggleIsOpen = () => {
+    setIsOpen(!isOpen);
+  };
+
   const handleSearch = (event) => {
     const query = event.target.value.toLowerCase();
     setSearchQuery(query);
@@ -41,20 +42,51 @@ const EventsScreen = () => {
 
     setFilteredEvents(filtered);
   };
-  */
 
   return (
     <Container maxWidth="lg" sx={{ mt: 4 }}>
+      {/* Navigation Bar */}
+      <AppBar position="static" sx={{ mb: 4 }}>
+        <Toolbar sx={{ justifyContent: 'space-between' }}>
+          <Typography variant="h6">Current Study Events</Typography>
+          <div>
+            <IconButton color="inherit">
+              <NotificationsIcon />
+            </IconButton>
+            <IconButton color="inherit" onClick={toggleIsOpen}>
+              <AddCircleIcon />
+            </IconButton>
+            <IconButton color="inherit">
+              <SettingsIcon />
+            </IconButton>
+          </div>
+        </Toolbar>
+      </AppBar>
+
+      {/* Search Bar */}
+      <TextField
+        label="Search events"
+        variant="outlined"
+        fullWidth
+        value={searchQuery}
+        onChange={handleSearch}
+        InputProps={{
+          endAdornment: <SearchIcon />
+        }}
+        sx={{ mb: 4 }}
+      />
+
+      {/* Events Grid */}
       <Grid container spacing={3}>
-        {events.map((event, index) => (
+        {filteredEvents.map((event, index) => (
           <Grid item xs={12} sm={6} md={4} key={index}>
             <Card variant="outlined">
               <CardContent>
                 <Typography variant="h6">
-                  {event.course.courseName} - {event.course.professor} - {event.course.section}
+                  {event.course.courseName} - {event.course.courseCode}
                 </Typography>
                 <Typography variant="subtitle1">
-                  Hosted by {event.name}
+                  Hosted by {event.fName} {event.lName}
                 </Typography>
                 <Typography variant="body2" color="textSecondary">
                   {event.description}
@@ -69,52 +101,14 @@ const EventsScreen = () => {
                 <Button variant="contained" color="primary" fullWidth sx={{ mt: 2 }}>
                   Join Event
                 </Button>
-                
               </CardContent>
             </Card>
           </Grid>
         ))}
       </Grid>
-      {/* Modal for Register Form */}
-      <Modal open={open} onClose={handleClose}>
-        <Box
-          sx={{
-            position: 'absolute',
-            top: '50%',
-            left: '50%',
-            transform: 'translate(-50%, -50%)',
-            width: 400,
-            bgcolor: 'background.paper',
-            border: '2px solid #000',
-            boxShadow: 24,
-            p: 4,
-          }}
-        >
-          <IconButton
-            aria-label="close"
-            onClick={handleClose}
-            sx={{ position: 'absolute', right: 8, top: 8 }}
-          >
-            <CloseIcon />
-          </IconButton>
-          <Typography variant="h6" component="h2">
-            Register for Event
-          </Typography>
-          <TextField
-            fullWidth
-            label="Your Name"
-            margin="normal"
-          />
-          <TextField
-            fullWidth
-            label="Your Email"
-            margin="normal"
-          />
-          <Button variant="contained" color="primary" fullWidth sx={{ mt: 2 }} onClick={handleClose}>
-            Submit
-          </Button>
-        </Box>
-      </Modal>
+
+      {/* Event Popup */}
+      <EventPopup isOpen={isOpen} onClose={toggleIsOpen} />
     </Container>
   );
 };

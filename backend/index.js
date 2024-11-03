@@ -69,7 +69,7 @@ app.get("/events", async (req, res) => {
 });
 
 // Create Event
-app.post("/events", async (req, res) => {
+app.post("/events",  (req, res) => {
   const { name, description, duration, location, cap, course, attendees } = req.body;
   const newEvent = new Event({
       name: name,
@@ -81,7 +81,7 @@ app.post("/events", async (req, res) => {
       attendees: attendees,
   });
   try {
-      const savedEvent = await newEvent.save();
+      const savedEvent =  newEvent.save();
       res.json(savedEvent);
   } catch (error) {
       res.status(400).json({ message: error.message });
