@@ -31,7 +31,8 @@ app.get("/users", async (req, res) => {
 });
 
 // Create User
-app.post("/users", async (req, res) => {
+app.post("/users",  (req, res) => {
+  console.log(req.body)
   const { name, email, password, phoneNumber, courses, attendingEvents } = req.body;
   const newUser = new User({
       name: name,
@@ -42,7 +43,7 @@ app.post("/users", async (req, res) => {
       attendingEvents: attendingEvents,
   });
   try {
-      const savedUser = await newUser.save();
+      const savedUser = newUser.save();
       res.json(savedUser);
   } catch (error) {
       res.status(400).json({ message: error.message });

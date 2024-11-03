@@ -7,8 +7,8 @@ const userSchema = new Schema({
     email: String,
     password: String,
     phoneNumber: String,
-    courses: [courseSchema],
-    attendingEvents: [String]
+   courses: [courseSchema],
+   attendingEvents: [String]
 });
 
 module.exports = mongoose.model("User", userSchema);

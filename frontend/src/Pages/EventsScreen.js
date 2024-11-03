@@ -13,7 +13,7 @@ const EventsScreen = () => {
   const [events, setEvents] = useState([]);
 
   useEffect(() => {
-    axios.get("")
+    
   }, []);
 
   const handleSearch = (event) => {

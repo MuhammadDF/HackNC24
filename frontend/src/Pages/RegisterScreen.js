@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Container, TextField, Typography, Button, LinearProgress, List, ListItem, IconButton } from '@mui/material';import { useNavigate } from 'react-router-dom';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { useContext } from 'react';
@@ -18,7 +18,7 @@ const RegisterScreen = () => {
   const [courses, setCourses] = useState([]);
   const [courseName, setCourseName] = useState('');
   const [professor, setProfessor] = useState('');
-  const [section, setSection] = useState(0);
+  const [section, setSection] = useState('');
   const navigate = useNavigate();
   const {user, setUser} = useContext(UserContext);
 
@@ -56,37 +56,46 @@ const RegisterScreen = () => {
   };
 
   const handleAddCourse = () => {
-    const newCourse = { 
-      courseName: courseName, 
-      professor: professor, 
-      section: section };
+    const newCourse = { courseName, professor, section };
     setCourses([...courses, newCourse]);
     setCourseName('');
     setProfessor('');
-    setSection(0);
+    setSection('');
   };
-
-  useEffect(() => {
-    console.log(courses);
-  }, [courses])
 
   const handleRemoveCourse = (index) => {
     setCourses(courses.filter((_, i) => i !== index));
   };
 
   const handleRegister = () => {
-    axios.post("http://localhost:5000/users", {
-      name: firstName + " " + lastName,
-      email: email,
-      password: password,
-      phoneNumber: phoneNumber,
-      courses: courses,
-      attendingEvents: []
-    })
-      .then((response) => {
-        setUser(response.data);
-        navigate('/events');
-      }).catch((err) => console.log(err));
+    fetch("http://localhost:5000/users", {
+      method: "POST",
+      headers: {
+          "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+          name: `${firstName} ${lastName}`,
+          email: email,
+          password: password,
+          phoneNumber: phoneNumber,
+          courses: courses,
+          attendingEvents: []
+      })
+  })
+  .then((response) => {
+      if (!response.ok) {
+          throw new Error('Network response was not ok');
+      }
+      return response.json();
+  })
+  .then((data) => {
+      setUser(data);
+      navigate('/events');
+  })
+  .catch((error) => {
+      console.error('There was a problem with the fetch operation:', error);
+  });
+  
   }
 
   return (
@@ -104,7 +113,7 @@ const RegisterScreen = () => {
       <Typography variant="h6" sx={{ mt: 3 }}>Add Course</Typography>
       <TextField label="Course Name" value={courseName} onChange={(e) => setCourseName(e.target.value)} fullWidth margin="normal" variant="outlined" />
       <TextField label="Professor" value={professor} onChange={(e) => setProfessor(e.target.value)} fullWidth margin="normal" variant="outlined" />
-      <TextField label="Section" value={section} onChange={(e) => setSection(Number(e.target.value))} fullWidth margin="normal" variant="outlined" />
+      <TextField label="Section" value={section} onChange={(e) => setSection(e.target.value)} fullWidth margin="normal" variant="outlined" />
       <Button variant="outlined" color="primary" onClick={handleAddCourse} fullWidth sx={{ mt: 2 }}>Add Course</Button>
       {/* Display added courses */}
       <List sx={{ mt: 2 }}>
