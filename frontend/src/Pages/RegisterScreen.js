@@ -76,7 +76,7 @@ const RegisterScreen = () => {
     })
       .then((response) => {
         setUser(response.data);
-        navigate('/');
+        navigate('/events');
       })
   }
 
@@ -86,7 +86,7 @@ const RegisterScreen = () => {
       <TextField label="First Name" value={firstName} onChange={(e) => setFirstName(e.target.value)} fullWidth margin="normal" variant="outlined" />
       <TextField label="Last Name" value={lastName} onChange={(e) => setLastName(e.target.value)} fullWidth margin="normal" variant="outlined" />
       <TextField label="Email" value={email} onChange={(e) => handleEmailChange(e.target.value)} fullWidth margin="normal" variant="outlined" error={!!emailError} helperText={emailError} />
-      <TextField label="Phone Number" value={email} onChange={(e) => setPhoneNumber(e.target.value)} fullWidth margin="normal" variant="outlined"/>
+      <TextField label="Phone Number" value={phoneNumber} onChange={(e) => setPhoneNumber(e.target.value)} fullWidth margin="normal" variant="outlined"/>
       <TextField label="Password" value={password} onChange={(e) => handlePasswordChange(e.target.value)} fullWidth margin="normal" variant="outlined" type="password" />
       <TextField label="Confirm Password" value={confirmPassword} onChange={(e) => handleConfirmPasswordChange(e.target.value)} fullWidth margin="normal" variant="outlined" type="password" error={!!passwordError} helperText={passwordError} />
       <Typography variant="body2" sx={{ mt: 2 }}>Password Strength:</Typography>
