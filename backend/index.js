@@ -43,7 +43,7 @@ app.get("/api/user", async(req, res) => {
 });
 
 // Register User Route
-app.post("/api/user", async(req, res) => {
+app.post("http://localhost:5000/api/usera", async(req, res) => {
   try {
     const { name, email, password, phoneNumber, courses, attendingEvents } = req.body;
     const user = new User({
@@ -57,6 +57,7 @@ app.post("/api/user", async(req, res) => {
     const result = await user.save();
     res.json(result); // Return saved user
   } catch (err) {
+    console.log(err);
     res.status(500).send("Failed to add user!");
   }
 });

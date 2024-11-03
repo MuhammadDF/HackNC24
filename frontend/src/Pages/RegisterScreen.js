@@ -18,7 +18,7 @@ const RegisterScreen = () => {
   const [courses, setCourses] = useState([]);
   const [courseName, setCourseName] = useState('');
   const [professor, setProfessor] = useState('');
-  const [section, setSection] = useState('');
+  const [section, setSection] = useState(0);
   const navigate = useNavigate();
   const {user, setUser} = useContext(UserContext);
 
@@ -56,11 +56,14 @@ const RegisterScreen = () => {
   };
 
   const handleAddCourse = () => {
-    const newCourse = { courseName, professor, section };
+    const newCourse = { 
+      courseName: courseName, 
+      professor: professor, 
+      section: section };
     setCourses([...courses, newCourse]);
     setCourseName('');
     setProfessor('');
-    setSection('');
+    setSection(0);
   };
 
   const handleRemoveCourse = (index) => {
@@ -68,18 +71,19 @@ const RegisterScreen = () => {
   };
 
   const handleRegister = () => {
-    axios.post("/api/user", {
-      name: `${firstName} ${lastName}`,
+    const registerData = {
+      name: firstName + " " + lastName,
       email: email,
       password: password,
       phoneNumber: phoneNumber,
       courses: courses,
       attendingEvents: []
-    })
+    };
+    axios.post("http://localhost:5000/api/usera", registerData)
       .then((response) => {
         setUser(response.data);
         navigate('/events');
-      })
+      }).catch((err) => console.log(err));
   }
 
   return (
@@ -97,7 +101,7 @@ const RegisterScreen = () => {
       <Typography variant="h6" sx={{ mt: 3 }}>Add Course</Typography>
       <TextField label="Course Name" value={courseName} onChange={(e) => setCourseName(e.target.value)} fullWidth margin="normal" variant="outlined" />
       <TextField label="Professor" value={professor} onChange={(e) => setProfessor(e.target.value)} fullWidth margin="normal" variant="outlined" />
-      <TextField label="Section" value={section} onChange={(e) => setSection(e.target.value)} fullWidth margin="normal" variant="outlined" />
+      <TextField label="Section" value={section} onChange={(e) => setSection(Number(e.target.value))} fullWidth margin="normal" variant="outlined" />
       <Button variant="outlined" color="primary" onClick={handleAddCourse} fullWidth sx={{ mt: 2 }}>Add Course</Button>
       {/* Display added courses */}
       <List sx={{ mt: 2 }}>
