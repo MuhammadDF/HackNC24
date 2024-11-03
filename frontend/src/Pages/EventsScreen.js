@@ -1,12 +1,18 @@
 import React, { useState, useEffect, useContext } from 'react';
 import {
-  AppBar, Toolbar, Typography, Container, Grid, Card, CardContent, Button, Modal, Box, TextField, IconButton,
+  AppBar, Toolbar, Typography, Container, Grid, Card, CardContent, Button, Modal, Box, TextField, IconButton
 } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
+//NotificationsIcon, AddCircleIcon, SettingsIcon, searchQuery, handleSearch, SearchIcon
+import SearchIcon from '@mui/icons-material/Search';
+import SettingsIcon from '@mui/icons-material/Settings';
+import AddCircleIcon from '@mui/icons-material/AddCircle';
+import NotificationsIcon from '@mui/icons-material/Notifications';
 import axios from 'axios';
 import UserContext from '../Contexts/UserContext';
 
 const EventsScreen = () => {
+  const [searchQuery, setSearchQuery] = useState('');
   const [events, setEvents] = useState([]);
   const [open, setOpen] = useState(false);
   const [selectedEvent, setSelectedEvent] = useState(null);
@@ -41,12 +47,56 @@ const EventsScreen = () => {
       .catch(error => console.error("Error fetching events:", error));
   };
 
+  const handleSearch = (event) => {
+    const query = event.target.value.toLowerCase();
+    setSearchQuery(query);
+    
+    // Filtering events based on search query
+    const filtered = events.filter(
+      (event) =>
+        event.course.courseName.toLowerCase().includes(query) ||
+        event.description.toLowerCase().includes(query) ||
+        event.name.toLowerCase().includes(query)
+    );
+    setEvents(filtered);
+  };
+
   useEffect(() => {
     fetchEvents();
   }, []);
 
   return (
     <Container maxWidth="lg" sx={{ mt: 4 }}>
+      {/* Navigation Bar */}
+      <AppBar position="static" sx={{ mb: 4 }}>
+        <Toolbar sx={{ justifyContent: 'space-between' }}>
+          <Typography variant="h6">Current Study Events</Typography>
+          <div>
+            <IconButton color="inherit">
+              <NotificationsIcon />
+            </IconButton>
+            <IconButton color="inherit">
+              <AddCircleIcon />
+            </IconButton>
+            <IconButton color="inherit">
+              <SettingsIcon />
+            </IconButton>
+          </div>
+        </Toolbar>
+      </AppBar>
+
+      {/* Search Bar */}
+      <TextField
+        label="Search events"
+        variant="outlined"
+        fullWidth
+        value={searchQuery}
+        onChange={handleSearch}
+        InputProps={{
+          endAdornment: <SearchIcon />
+        }}
+        sx={{ mb: 4 }}
+      />
       <Grid container spacing={3}>
         {events.map((event) => (
           <Grid item xs={12} sm={6} md={4} key={event._id}>

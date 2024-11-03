@@ -58,26 +58,6 @@ app.post("/users",  (req, res) => {
   }
 });
 
-// Create User
-app.update("/users",  (req, res) => {
-  console.log(req.body)
-  const { name, email, password, phoneNumber, courses, attendingEvents } = req.body;
-  const newUser = new User({
-      name: name,
-      email: email,
-      password: password,
-      phoneNumber: phoneNumber,
-      courses: courses,
-      attendingEvents: attendingEvents,
-  });
-  try {
-      const savedUser = newUser.save();
-      res.json(savedUser);
-  } catch (error) {
-      res.status(400).json({ message: error.message });
-  }
-});
-
 // Geting Events
 app.get("/events", async (req, res) => {
   try {
