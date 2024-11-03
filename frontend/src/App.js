@@ -17,7 +17,7 @@ const App = () => {
       <UserContext.Provider value={{user, setUser}}>
         <Router>
           <Routes>
-            <Route path="/" element={<DummyUser />} />
+            <Route path="/" element={<LoginScreen />} />
             <Route path="/register" element={<RegisterScreen />} />
             <Route path="/events" element={<EventsScreen />} />
           </Routes>
