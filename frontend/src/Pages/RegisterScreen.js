@@ -1,6 +1,9 @@
 import React, { useState } from 'react';
 import { Container, TextField, Typography, Button, LinearProgress } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
+import { useContext } from 'react';
+import UserContext from '../Contexts/UserContext';
+import axios from "axios";
 
 const RegisterScreen = () => {
   const [firstName, setFirstName] = useState('');
@@ -12,6 +15,7 @@ const RegisterScreen = () => {
   const [passwordError, setPasswordError] = useState('');
   const [passwordStrength, setPasswordStrength] = useState(0);
   const navigate = useNavigate();
+  const {user, setUser} = useContext(UserContext);
 
   const validateEmail = (email) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -44,6 +48,13 @@ const RegisterScreen = () => {
     setPasswordError(password === confirmPassword ? '' : "Passwords don't match");
   };
 
+  const handleClick = () => {
+    axios.post("/api/events", {})
+      .then((respose) => {
+        
+      })
+  }
+
   return (
     <Container maxWidth="xs" sx={{ textAlign: 'center', mt: 4 }}>
       <Typography variant="h4" gutterBottom>Register</Typography>
@@ -57,7 +68,10 @@ const RegisterScreen = () => {
       <Button variant="contained" color="primary" fullWidth sx={{ mt: 2 }}>
         Register
       </Button>
-      <Button variant="text" color="primary" onClick={() => navigate('/')} fullWidth>
+      <Button variant="text" color="primary" onClick={() => {
+          handleClick();
+          navigate('/');
+        }} fullWidth>
         Back to Login
       </Button>
     </Container>
