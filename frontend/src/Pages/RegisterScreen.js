@@ -27,6 +27,8 @@ const RegisterScreen = () => {
     return emailRegex.test(email);
   };
 
+  
+
   const handleEmailChange = (email) => {
     setEmail(email);
     setEmailError(email === '' || validateEmail(email) ? '' : 'Email is invalid');
