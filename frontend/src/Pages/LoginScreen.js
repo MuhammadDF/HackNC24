@@ -1,11 +1,14 @@
 import React, { useState } from 'react';
 import { Container, TextField, Typography, Button, Box } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
+import axios from "axios";
+
 
 const LoginScreen = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [emailError, setEmailError] = useState('');
+  const [user,setUser] = useState('');
   const navigate = useNavigate();
 
   const validateEmail = (email) => {
@@ -17,6 +20,19 @@ const LoginScreen = () => {
     setEmail(email);
     setEmailError(email === '' || validateEmail(email) ? '' : 'Email is invalid');
   };
+
+  const handleLogIn = () => {
+    axios.get("/api/user", {
+      params: {
+        email: email,
+        password: password
+      }
+    })
+      .then((response) => {
+        setUser(response.data);
+        navigate('/events');
+      })
+  }
 
   return (
     <Container maxWidth="xs" sx={{ textAlign: 'center', mt: 4 }}>
@@ -47,7 +63,7 @@ const LoginScreen = () => {
         <Button
           variant="text"
           color="primary"
-          onClick={() => navigate('/register')}
+          onClick={handleLogIn}
           fullWidth
           sx={{ mt: 1 }}
         >
