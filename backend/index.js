@@ -21,13 +21,21 @@ mongoose.connect(process.env.MONGODB_URI)
 .catch((error) => console.error("MongoDB connection error:", error));
 
 // Getting Users
-app.get("/users", async (req, res) => {
-  try {
-      const users = await User.find();
-      res.json(users);
-  } catch (error) {
-      res.status(500).json({ message: error.message });
+app.post("/login",  (req, res) => {
+  
+  const params = {
+    email: req.body.email,
+    password: req.body.password
   }
+  
+      const user = User.findOne(params)
+      .then((result)=>{
+        res.json(result)
+      })
+      .catch((error) => {
+        res.status(400).json({ message: error.message }); 
+      })
+   
 });
 
 // Create User

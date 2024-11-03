@@ -6,6 +6,7 @@ const LoginScreen = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [emailError, setEmailError] = useState('');
+  const [user, setUser] = useState('');
   const navigate = useNavigate();
 
   const validateEmail = (email) => {
@@ -17,6 +18,40 @@ const LoginScreen = () => {
     setEmail(email);
     setEmailError(email === '' || validateEmail(email) ? '' : 'Email is invalid');
   };
+
+  const handleLogIn = () => {
+    const data = new URLSearchParams();
+    data.append('email', email);
+    data.append('password', password);
+
+    fetch("http://localhost:5000/login", {
+      method: "POST",
+      headers: {
+          "Content-Type": "application/json",
+      }, 
+      body: JSON.stringify({
+        email: email, 
+        password: password
+      })
+      
+      
+  })
+  .then((response) => {
+      if (!response.ok) {
+          throw new Error('Network response was not ok');
+      }
+      return response.json();
+  })
+  .then((data) => {
+      setUser(data);
+      navigate('/events');
+  })
+  .catch((error) => {
+      console.error('There was a problem with the fetch operation:', error);
+  });
+  
+  }
+
 
   return (
     <Container maxWidth="xs" sx={{ textAlign: 'center', mt: 4 }}>
@@ -41,7 +76,7 @@ const LoginScreen = () => {
         type="password"
       />
       <Box mt={2}>
-        <Button variant="contained" color="primary" fullWidth>
+        <Button variant="contained" color="primary" fullWidth onClick={handleLogIn}>
           Login
         </Button>
         <Button
