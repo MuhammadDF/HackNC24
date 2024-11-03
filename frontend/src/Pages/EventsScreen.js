@@ -114,9 +114,7 @@ const EventsScreen = () => {
 
       {/* Events Grid */}
       <Grid container spacing={3}>
-        {filteredEvents.map((event, index) => (
-          <Grid item xs={12} sm={6} md={4} key={index}>
-      <Grid container spacing={3}>
+        
         {events.map((event) => (
           <Grid item xs={12} sm={6} md={4} key={event._id}>
             <Card variant="outlined">

@@ -3,19 +3,26 @@ import { Container, TextField, Typography, Button, Box } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import UserContext from '../Contexts/UserContext';
 <<<<<<< HEAD
+<<<<<<< HEAD
 import { useContext } from 'react';
 =======
 >>>>>>> abid-events-screen
+=======
+>>>>>>> d2cae539 (merge resolved)
 
 const LoginScreen = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [emailError, setEmailError] = useState('');
 <<<<<<< HEAD
+<<<<<<< HEAD
   const {user, setUser} = useContext(UserContext);
 =======
   const [user, setUser] = useContext(UserContext);
 >>>>>>> abid-events-screen
+=======
+  const [user, setUser] = useContext(UserContext);
+>>>>>>> d2cae539 (merge resolved)
   const navigate = useNavigate();
 
   const validateEmail = (email) => {
