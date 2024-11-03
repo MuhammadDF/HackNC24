@@ -8,7 +8,7 @@ const mockEvents = [
       location: "Room 101",
       cap: 30,
       course: { courseName: "Calculus", courseCode: "MATH101" },
-      attendees: ["Jane Smith", "Robert Brown"]
+      attendees: [{name: "Jane Smith"}, {name: "Robert Brown"}]
     },
     {
       fName: "Emily",
@@ -18,7 +18,7 @@ const mockEvents = [
       location: "Library",
       cap: 20,
       course: { courseName: "Physics", courseCode: "PHYS202" },
-      attendees: [ name: "Sarah Lee" }]
+      attendees: [ {name: "Sarah Lee" }]
     }
     // Add more events as needed
   ];
