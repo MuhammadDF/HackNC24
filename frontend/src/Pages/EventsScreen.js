@@ -11,11 +11,16 @@ import NotificationsIcon from '@mui/icons-material/Notifications';
 import axios from 'axios';
 import UserContext from '../Contexts/UserContext';
 
+
+
 const EventsScreen = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [events, setEvents] = useState([]);
   const [isOpen, setIsOpen] = useState(false);
   const {user, setUser} = useContext(UserContext);
+  const [open, setOpen] = useState(false);
+  const [selectedEvent, setSelectedEvent] = useState(null);
+
 
 
 
@@ -28,9 +33,7 @@ const EventsScreen = () => {
     setIsOpen(!isOpen);
   };
 
-  const [open, setOpen] = useState(false);
-  const [selectedEvent, setSelectedEvent] = useState(null);
-  const { user } = useContext(UserContext);
+  
 
   const handleOpen = (event) => {
     setSelectedEvent(event);
